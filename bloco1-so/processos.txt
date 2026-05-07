@@ -6,36 +6,62 @@
 # Cole abaixo a saída de cada comando e anote o que observou.
 
 echo $$
-  PID do shell: 
+  PID do shell: 47
 
 cat /proc/[PID]/status   (substitua [PID] pelo número real)
-  PID:
-  PPID (processo pai):
-  State:
+  PID: 47
+  PPID (processo pai): 1
+  State: S
 
 cat /proc/[PID]/stat (campos relevantes)
-  Campo 2 — nome do executável:
-  Campo 3 — estado:
-  Campos 14 e 15 — utime / stime:
+  Campo 2 — nome do executável: (sh)
+  Campo 3 — estado: S 
+  Campos 14 e 15 — utime / stime: 20 / 25
 
 ps aux (primeiras linhas)
-  [cole aqui]
+  root         1  0.1  1.3   3136  2516 ?        S    08:01   0:00 /bin/sh /sbin/i
+root         2  0.0  0.0      0     0 ?        S    08:01   0:00 [kthreadd]
+root         3  0.0  0.0      0     0 ?        I    08:01   0:00 [kworker/0:0]
+root         4  0.0  0.0      0     0 ?        I<   08:01   0:00 [kworker/0:0H]
+root         5  0.0  0.0      0     0 ?        I    08:01   0:00 [kworker/u2:0]
+root         6  0.0  0.0      0     0 ?        I<   08:01   0:00 [mm_percpu_wq]
+root         7  0.0  0.0      0     0 ?        S    08:01   0:00 [ksoftirqd/0]
+root         8  0.0  0.0      0     0 ?        S    08:01   0:00 [kdevtmpfs]
+root         9  0.0  0.0      0     0 ?        I<   08:01   0:00 [netns]
+root        10  0.0  0.0      0     0 ?        S    08:01   0:00 [oom_reaper]
+root        11  0.0  0.0      0     0 ?        I<   08:01   0:00 [writeback]
+root        12  0.0  0.0      0     0 ?        I<   08:01   0:00 [crypto]
+root        13  0.0  0.0      0     0 ?        I<   08:01   0:00 [kblockd]
+root        14  0.0  0.0      0     0 ?        S    08:01   0:00 [kswapd0]
+root        15  0.0  0.0      0     0 ?        I    08:01   0:00 [kworker/0:1]
+root        32  0.0  0.0      0     0 ?        S    08:01   0:00 [khvcd]
+root        42  0.0  0.7   1944  1472 ?        Ss   08:01   0:00 dhcpcd
+root        47  0.1  1.5   6204  2944 hvc0     Ss   08:01   0:00 sh -l
+root        78  0.0  0.0      0     0 ?        I    08:01   0:00 [kworker/u2:1]
+root        83  7.0  1.4   8180  2740 hvc0     R+   08:06   0:00 ps aux
 
 
 # PARTE B — Processo filho
 # Cole a saída dos comandos e responda:
 
 sleep 5m &
-  PID do filho: 
+  PID do filho: 84
 
 cat /proc/[FILHO]/status | grep -E "Pid|PPid|State"
-  [cole aqui]
-
+  Pid: 84 | PPid: 47 | State: S (sleeping)
+     
 ps -o pid,ppid,stat,cmd (antes do kill)
-  [cole aqui]
-
+  	PID  PPID STAT CMD
+ 	47     1 Ss   sh -l
+ 	96    47 S    sleep 5m
+ 	98    47 S    sleep 5m
+	100    47 S    sleep 5m
+	102    47 R+   ps -o pid,ppid,stat,cmd
 ps -o pid,ppid,stat,cmd (depois do kill)
-  [cole aqui]
+  	PID  PPID STAT CMD
+ 	47     1 Ss   sh -l
+ 	98    47 S    sleep 5m
+	103    47 R+   ps -o pid,ppid,stat,cmd
 
 
 # PARTE C — Questões de síntese
@@ -45,7 +71,7 @@ ps -o pid,ppid,stat,cmd (depois do kill)
 #    O que esse encadeamento sugere sobre como os processos sao
 #    criados no Linux?
 
-Resposta 1:
+Resposta 1: O encadeamento mostra sh -l (PID 47) com o pai PID 1 (systemd). Isso indica que no Linux todo processo nasce de outro processo via fork(), então forma uma árvore com raiz no PID 1. Portanto, nenhum processo existe sem um pai.
 
 
 # 2. O arquivo /proc/<PID>/status mostra o campo State com uma letra
@@ -53,4 +79,4 @@ Resposta 1:
 #    o que aconteceu com o processo filho? O que isso te faz pensar  
 #    sobre a vida de um processo?
 
-Resposta 2:
+Resposta 2: O processo filho (PID 100) desapareceu da listagem após o kill, o que mostra que processos têm ciclo de vida finito (nascem, executam e morrem). O sinal SIGTERM encerrou o sleep imediatamente, liberando o PID e os recursos. 
