@@ -6,25 +6,25 @@
 # Para cada diretório, registre o comando executado e uma linha
 # explicando a função do diretório com suas próprias palavras.
 
-/proc
+/proc - Representa um diretório virtual na RAM que expõe o estado interno do kernel em tempo real;
   
 
-/proc/cpuinfo
+/proc/cpuinfo - Representa a ficha técnica do processador vista pelo kernel (arquitetura RISC-V no seu caso)
   
 
-/proc/meminfo
+/proc/meminfo - Representa o estado atual da memória RAM (o total, livre, cache e o swap);
   
 
-/proc/uptime
+/proc/uptime - Representa o tempo em segundos desde o último boot do sistema;
   
 
-/bin
+/bin - Representa programas executáveis essenciais disponíveis para todos os usuários;
 
   
-/dev
+/dev - Representa arquivos que representam dispositivos de hardware;
   
 
-/etc
+/etc - Representa arquivos de configuração do sistema e dos serviços instalados;
   
 
 
@@ -33,4 +33,4 @@
 # e que rotinas de dispositivo traduziam comandos.
 # Em qual diretório do Linux você reconhece essa função?
 
-Resposta:
+Resposta: O diretório `/dev` tem essa função no Linux. Assim como o supervisor controlava o acesso de entrada e saída (I/O) e as rotinas traduziam comandos para o hardware, o `/dev` mostra os dispositivos como arquivos. Quando um programa lê ou escreve nesses arquivos, o kernel converte essas ações em comunicação real com o hardware.
